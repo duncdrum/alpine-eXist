@@ -1,0 +1,20 @@
+sudo: required
+dist: trusty
+os: linux
+language: c
+services:
+  - docker
+env:
+  global:
+    - IMAGE="grantmacken/alpine-exist"
+before_script:
+  - docker pull "$IMAGE" || true
+script:
+  - docker build --pull --cache-from "$IMAGE" --tag "$IMAGE" .
+  - docker run --name ex --publish 8080:8080 -d $IMAGE
+  - docker ps
+  - docker exec ex pwd
+  - docker exec ex which java
+
+after_script:
+- docker images
